@@ -1,13 +1,13 @@
-provider "aws" {
-  region  = "ap-south-1" # Don't change the region
-}
-
 terraform {
   backend "s3" {
     bucket = "467.devops.candidate.exam"
     key    = "Tejaswini.Wakte" # Replace with your actual first and last name
     region = "ap-south-1"
   }
+}
+
+provider "aws" {
+  region = "ap-south-1"
 }
 
 resource "aws_subnet" "private" {
