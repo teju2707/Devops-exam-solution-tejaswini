@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        // Define any environment variables here if necessary
-    }
-
     stages {
         stage('Checkout SCM') {
             steps {
@@ -19,26 +15,28 @@ pipeline {
         }
         stage('TF Validate') {
             steps {
-                echo 'Validating Terraform configuration'
+                echo 'Validating Terraform Code'
                 sh 'terraform validate'
             }
         }
         stage('TF Plan') {
             steps {
-                echo 'Generating Terraform Plan'
+                echo 'Executing Terraform Plan'
                 sh 'terraform plan'
             }
         }
         stage('TF Apply') {
             steps {
-                echo 'Applying Terraform configuration'
+                echo 'Executing Terraform Apply'
                 sh 'terraform apply -auto-approve'
             }
         }
         stage('Invoke Lambda') {
             steps {
-                echo 'Invoking Lambda function'
-                // Add steps to invoke the Lambda function here
+                echo 'Invoking your AWS Lambda'
+                sh '''
+                aws lambda invoke --function-name InvokeLambda --log-type Tail --query "LogResult" --output text lambda_output.log | base64 -d
+                '''
             }
         }
     }
