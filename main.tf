@@ -11,7 +11,7 @@ terraform {
 }
 
 resource "aws_subnet" "private" {
-  vpc_id            = "<VPC_ID>"
+  vpc_id            = data.aws_vpc.vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "ap-south-1a"
 
@@ -21,7 +21,7 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_security_group" "lambda_sg" {
-  vpc_id = "<VPC_ID>"
+  vpc_id = data.aws_vpc.vpc.id
 
   ingress {
     from_port   = 443
@@ -45,7 +45,7 @@ resource "aws_security_group" "lambda_sg" {
 resource "aws_lambda_function" "invoke_lambda" {
   filename         = "lambda_function.zip"
   function_name    = "InvokeLambda"
-  role             = "<LAMBDA_ROLE_ARN>"
+  role             = data.aws_iam_role.lambda.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.8"
   timeout          = 30
