@@ -1,7 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+        // Define any environment variables here if necessary
+    }
+
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
         stage('TF Init') {
             steps {
                 echo 'Executing Terraform Init'
@@ -10,31 +19,39 @@ pipeline {
         }
         stage('TF Validate') {
             steps {
-                echo 'Validating Terraform Code'
+                echo 'Validating Terraform configuration'
                 sh 'terraform validate'
             }
         }
         stage('TF Plan') {
             steps {
-                echo 'Executing Terraform Plan'
+                echo 'Generating Terraform Plan'
                 sh 'terraform plan'
             }
         }
         stage('TF Apply') {
             steps {
-                echo 'Executing Terraform Apply'
+                echo 'Applying Terraform configuration'
                 sh 'terraform apply -auto-approve'
             }
         }
         stage('Invoke Lambda') {
             steps {
-                echo 'Invoking your AWS Lambda'
-                script {
-                    def logResult = sh(script: 'aws lambda invoke --function-name InvokeLambda --log-type Tail output.log', returnStdout: true)
-                    def logOutput = sh(script: 'cat output.log | jq -r ".LogResult" | base64 --decode', returnStdout: true)
-                    echo logOutput
-                }
+                echo 'Invoking Lambda function'
+                // Add steps to invoke the Lambda function here
             }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning up workspace'
+            deleteDir()
+        }
+        success {
+            echo 'Pipeline succeeded'
+        }
+        failure {
+            echo 'Pipeline failed'
         }
     }
 }
