@@ -5,7 +5,7 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "467.devops.candidate.exam"
-    key    = "Tejaswini.LastName" # Replace with your actual first and last name
+    key    = "Tejaswini.Wakte" # Replace with your actual first and last name
     region = "ap-south-1"
   }
 }
