@@ -12,7 +12,7 @@ provider "aws" {
 
 resource "aws_subnet" "private" {
   vpc_id            = data.aws_vpc.vpc.id
-  cidr_block        = "10.0.87.0/24" # Changed CIDR block to avoid conflict
+  cidr_block        = "10.0.5.0/24" # Changed CIDR block to avoid conflict
   availability_zone = "ap-south-1a"
 
   tags = {
@@ -61,11 +61,4 @@ resource "aws_lambda_function" "invoke_lambda" {
       EMAIL     = "your.email@example.com" # Replace with your actual email address
     }
   }
-
-  depends_on = [aws_iam_role_policy_attachment.lambda_policy]
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_policy" {
-  role       = data.aws_iam_role.lambda.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
