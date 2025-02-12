@@ -1,19 +1,19 @@
-terraform {
-  backend "s3" {
-    bucket = "467.devops.candidate.exam"
-    key    = "Tejaswini.Wakte" # Replace with your actual first and last name
-    region = "ap-south-1"
-  }
-}
-
 provider "aws" {
   region = "ap-south-1"
 }
 
+data "aws_vpc" "vpc" {
+  filter {
+    name   = "tag:Name"
+    values = ["YourVPCName"]
+  }
+}
+
 resource "aws_subnet" "private" {
   vpc_id            = data.aws_vpc.vpc.id
-  cidr_block        = "10.0.5.0/24" # Changed CIDR block to avoid conflict
-  availability_zone = "ap-south-1a"
+  cidr_block        = "10.0.87.0/24"
+  availability_zone = "aps1-az1"
+  map_public_ip_on_launch = false
 
   tags = {
     Name = "Private Subnet"
@@ -22,13 +22,6 @@ resource "aws_subnet" "private" {
 
 resource "aws_security_group" "lambda_sg" {
   vpc_id = data.aws_vpc.vpc.id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   egress {
     from_port   = 0
@@ -45,20 +38,15 @@ resource "aws_security_group" "lambda_sg" {
 resource "aws_lambda_function" "invoke_lambda" {
   filename         = "lambda_function.zip"
   function_name    = "InvokeLambda"
-  role             = data.aws_iam_role.lambda.arn
+  role             = "arn:aws:iam::168009530589:role/DevOps-Candidate-Lambda-Role"
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.8"
+  memory_size      = 128
   timeout          = 30
-  vpc_config {
-    subnet_ids         = [aws_subnet.private.id]
-    security_group_ids = [aws_security_group.lambda_sg.id]
-  }
+  source_code_hash = filebase64sha256("lambda_function.zip")
 
-  environment {
-    variables = {
-      SUBNET_ID = aws_subnet.private.id
-      NAME      = "Tejaswini Wakte" # Replace with your actual name
-      EMAIL     = "your.email@example.com" # Replace with your actual email address
-    }
+  vpc_config {
+    security_group_ids = [aws_security_group.lambda_sg.id]
+    subnet_ids         = [aws_subnet.private.id]
   }
 }
