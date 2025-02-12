@@ -2,18 +2,6 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-data "aws_nat_gateway" "nat" {
-  id = "nat-0a34a8efd5e420945"
-}
-
-data "aws_vpc" "vpc" {
-  id = "vpc-06b326e20d7db55f9"
-}
-
-data "aws_iam_role" "lambda" {
-  name = "DevOps-Candidate-Lambda-Role"
-}
-
 resource "aws_subnet" "private" {
   vpc_id            = data.aws_vpc.vpc.id
   cidr_block        = "10.0.87.0/24"
