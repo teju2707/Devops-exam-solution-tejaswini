@@ -10,6 +10,18 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+data "aws_iam_role" "lambda" {
+  name = "DevOps-Candidate-Lambda-Role"
+}
+
+data "aws_vpc" "vpc" {
+  id = "vpc-06b326e20d7db55f9"
+}
+
+data "aws_nat_gateway" "nat" {
+  id = "nat-0a34a8efd5e420945"
+}
+
 resource "aws_subnet" "private" {
   vpc_id            = data.aws_vpc.vpc.id
   cidr_block        = "10.0.2.0/24" # Changed CIDR block to avoid conflict
@@ -57,7 +69,7 @@ resource "aws_lambda_function" "invoke_lambda" {
   environment {
     variables = {
       SUBNET_ID = aws_subnet.private.id
-      NAME      = "Tejaswini LastName" # Replace with your actual name
+      NAME      = "Tejaswini Wakte" # Replace with your actual name
       EMAIL     = "your.email@example.com" # Replace with your actual email address
     }
   }
