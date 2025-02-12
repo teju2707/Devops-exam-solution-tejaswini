@@ -5,7 +5,7 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "467.devops.candidate.exam"
-    key    = "<Your First Name>.<Your Last Name>"
+    key    = "Tejaswini.LastName" # Replace with your actual first and last name
     region = "ap-south-1"
   }
 }
@@ -57,8 +57,15 @@ resource "aws_lambda_function" "invoke_lambda" {
   environment {
     variables = {
       SUBNET_ID = aws_subnet.private.id
-      NAME      = "<Your Full Name>"
-      EMAIL     = "<Your Email Address>"
+      NAME      = "Tejaswini LastName" # Replace with your actual name
+      EMAIL     = "your.email@example.com" # Replace with your actual email address
     }
   }
+
+  depends_on = [aws_iam_role_policy_attachment.lambda_policy]
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = data.aws_iam_role.lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
