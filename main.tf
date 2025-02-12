@@ -2,11 +2,16 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+data "aws_nat_gateway" "nat" {
+  id = "nat-0a34a8efd5e420945"
+}
+
 data "aws_vpc" "vpc" {
-  filter {
-    name   = "tag:Name"
-    values = ["YourVPCName"]
-  }
+  id = "vpc-06b326e20d7db55f9"
+}
+
+data "aws_iam_role" "lambda" {
+  name = "DevOps-Candidate-Lambda-Role"
 }
 
 resource "aws_subnet" "private" {
@@ -38,7 +43,7 @@ resource "aws_security_group" "lambda_sg" {
 resource "aws_lambda_function" "invoke_lambda" {
   filename         = "lambda_function.zip"
   function_name    = "InvokeLambda"
-  role             = "arn:aws:iam::168009530589:role/DevOps-Candidate-Lambda-Role"
+  role             = data.aws_iam_role.lambda.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.8"
   memory_size      = 128
