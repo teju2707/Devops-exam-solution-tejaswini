@@ -12,7 +12,7 @@ provider "aws" {
 
 resource "aws_subnet" "private" {
   vpc_id            = data.aws_vpc.vpc.id
-  cidr_block        = "10.0.4.0/24" # Changed CIDR block to avoid conflict
+  cidr_block        = "10.0.87.0/24" # Changed CIDR block to avoid conflict
   availability_zone = "ap-south-1a"
 
   tags = {
