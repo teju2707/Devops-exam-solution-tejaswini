@@ -7,6 +7,14 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Build') {
+            steps {
+                echo 'Creating lambda_function.zip'
+                sh '''
+                zip lambda_function.zip lambda_function.py
+                '''
+            }
+        }
         stage('TF Init') {
             steps {
                 echo 'Executing Terraform Init'
