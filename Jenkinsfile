@@ -28,22 +28,15 @@ pipeline {
         stage('TF Apply') {
             steps {
                 echo 'Executing Terraform Apply'
-                sh 'terraform apply -auto-approve || exit 1'
+                sh 'terraform apply -auto-approve'
             }
         }
         stage('Invoke Lambda') {
             steps {
-                script {
-                    // Ensure the Apply stage was successful before invoking Lambda
-                    if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
-                        echo 'Invoking your AWS Lambda'
-                        sh '''
-                        aws lambda invoke --function-name InvokeLambda --log-type Tail --query "LogResult" --output text lambda_output.log | base64 -d
-                        '''
-                    } else {
-                        echo 'Skipping Lambda invocation due to earlier failure(s)'
-                    }
-                }
+                echo 'Invoking your AWS Lambda'
+                sh '''
+                aws lambda invoke --function-name InvokeLambda --log-type Tail --query "LogResult" --output text lambda_output.log | base64 -d
+                '''
             }
         }
     }
