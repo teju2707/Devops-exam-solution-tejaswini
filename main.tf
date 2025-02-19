@@ -30,7 +30,7 @@ resource "aws_security_group" "lambda_sg" {
 
 resource "aws_lambda_function" "invoke_lambda" {
   filename         = "lambda_function.zip"
-  function_name    = "InvokeLambda"
+  function_name    = "InvokeLambda_Teju2707"  # Updated to a unique name
   role             = data.aws_iam_role.lambda.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.8"
