@@ -46,7 +46,7 @@ pipeline {
                     if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
                         echo 'Invoking your AWS Lambda'
                         sh '''
-                        aws lambda invoke --function-name InvokeLambda --log-type Tail --query "LogResult" --output text lambda_output.log | base64 -d
+                        aws lambda invoke --function-name InvokeLambda_Teju2707 --log-type Tail --query "LogResult" --output text lambda_output.log | base64 -d
                         '''
                     } else {
                         echo 'Skipping Lambda invocation due to earlier failure(s)'
